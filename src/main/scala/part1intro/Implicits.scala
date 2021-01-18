@@ -50,14 +50,23 @@ object Implicits {
          |""".stripMargin.trim
   }
 
+  // Extension
+  object JsonExtension {
+    implicit class JsonExtensionObj[T](name: T)(implicit serializer: JSONSerializer[T]) {
+      def toJson: String = serializer.toJson(name)
+    }
+  }
+
   case class Cat(catName: String)
   val catsToJson = listToJson(List(Cat("Tom"), Cat("Garfield")))
+
   // in the background: val catsToJson = listToJson(List(Cat("Tom"), Cat("Garfield")))(oneArgCaseClassSerializer[Cat])
   // implicit methods are used to PROVE THE EXISTENCE of a type
   // can be used for implicit conversions (DISCOURAGED)
 
 
   def main(args: Array[String]): Unit = {
-
+    import JsonExtension._
+    println(Cat("Billy").toJson)
   }
 }

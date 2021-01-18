@@ -13,6 +13,7 @@ object TCVariance {
   // variance
   class Animal
   class Cat extends Animal
+  class BlackCat extends Cat
 
   // covariant type: subtyping is propagated to the generic type
   class Cage[+T]
@@ -31,6 +32,7 @@ object TCVariance {
   def makeSound[T](implicit soundMaker: SoundMaker[T]): Unit = println("wow") // implementation not important
   makeSound[Animal] // ok - TC instance defined above
   makeSound[Cat] // ok - TC instance for Animal is also applicable to Cats
+  makeSound[BlackCat] // ok - Even child of child
   // rule 1: contravariant TCs can use the superclass instances if nothing is available strictly for that type
 
   // has implications for subtypes
@@ -48,6 +50,10 @@ object TCVariance {
   implicit object CatsShow extends AnimalShow[Cat] {
     override def show = "so many cats!"
   }
+  implicit object BlackCatShow extends AnimalShow[BlackCat] {
+    override def show = "so many black cats"
+  }
+
   def organizeShow[T](implicit event: AnimalShow[T]): String = event.show
   // rule 2: covariant TCs will always use the more specific TC instance for that type
   // but may confuse the compiler if the general TC is also present
@@ -57,8 +63,9 @@ object TCVariance {
   Option(2) === Option.empty[Int]
 
   def main(args: Array[String]): Unit = {
-    println(organizeShow[Cat]) // ok - the compiler will inject CatsShow as implicit
+//    println(organizeShow[Cat]) // ok - the compiler will inject CatsShow as implicit
     // println(organizeShow[Animal]) // will not compile - ambiguous values
+    println(organizeShow[BlackCat]) // Now only BlackCat implicit is visible
   }
 
 

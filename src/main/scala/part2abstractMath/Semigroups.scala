@@ -21,6 +21,15 @@ object Semigroups {
   // TODO 1: support a new type
   // hint: use the same pattern we used with Eq
   case class Expense(id: Long, amount: Double)
+
+  // My attempt
+//  implicit val toExpenseEq: Semigroup[Expense] =  Semigroup.instance[Expense] { (exp1, exp2) =>
+//    if(exp1.id == exp2.id) Expense(exp1.id, exp1.amount + exp2.amount)
+//
+//  }
+//  val myExpenseSemigroup = Semigroup[Expense]
+//  val myExpenseCombination = myExpenseSemigroup.combine(Expense(1, 10), Expense(2, 20) )
+
   implicit val expenseSemigroup: Semigroup[Expense] = Semigroup.instance[Expense] { (e1, e2) =>
     Expense(Math.max(e1.id, e2.id), e1.amount + e2.amount)
   }
@@ -49,6 +58,8 @@ object Semigroups {
     println(reduceThings(strings)) // compiler injects the implicit Semigroup[String]
     import cats.instances.option._
 
+    println(reduceThings(List[Option[Int]](Option(3), None)))
+
     // compiler will produce an implicit Semigroup[Option[Int]] whose combine method returns another option with the summed elements
     val numberOptions: List[Option[Int]] = numbers.map(n => Option(n))
     println(reduceThings(numberOptions)) // an Option[Int] containing the sum of all the numbers
@@ -56,6 +67,8 @@ object Semigroups {
     val stringOptions: List[Option[String]] = strings.map(s => Option(s))
     println(reduceThings(stringOptions))
     // same for any type with an implicit Semigroup
+
+//    println(myExpenseCombination)
 
     // test ex 1
     val expenses = List(Expense(1, 99), Expense(2, 35), Expense(43, 10))

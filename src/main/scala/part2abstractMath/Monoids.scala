@@ -17,7 +17,7 @@ object Monoids {
   // MONOIDS
   import cats.Monoid
   val intMonoid = Monoid[Int]
-  val combineInt = intMonoid.combine(23, 999) // 1024
+  val combineInt = intMonoid.combine(25, 999) // 1024
   val zero = intMonoid.empty // 0
 
   import cats.instances.string._ // bring the implicit Monoid[String] in scope
@@ -34,6 +34,10 @@ object Monoids {
   val combinedOptionFancy = Option(3) |+| Option(7)
 
   // TODO 1: implement a combineFold
+  // My attempt
+//  def combineFoldLeft[T](list: List[T])(implicit combiner: Monoid[T]): T = {
+//    list.foldLeft(combiner.empty)(combiner.combine)
+//  }
   def combineFold[T](list: List[T])(implicit monoid: Monoid[T]): T =
     list.foldLeft(monoid.empty)(_ |+| _)
 
@@ -52,6 +56,9 @@ object Monoids {
       "Tina" -> 123
     )
   )
+  //My attempty
+//  import cats.instances.map._
+//  val ans = combineFold(phonebooks)
 
   import cats.instances.map._
   val massivePhonebook = combineFold(phonebooks)
@@ -60,6 +67,11 @@ object Monoids {
   // hint: define your monoid - Monoid.instance
   // hint #2: use combineByFold
   case class ShoppingCart(items: List[String], total: Double)
+  import cats.instances.list._
+  import cats.instances.double._
+//  implicit val shoppingCartMonoid: Monoid[ShoppingCart] = Monoid.instance(
+//    ShoppingCart(List(), 0.0), (sc1, sc2) => ShoppingCart(sc1.items |+| sc2.items, sc1.total |+| sc2.total))
+
   implicit val shoppingCartMonoid: Monoid[ShoppingCart] = Monoid.instance(
     ShoppingCart(List(), 0.0),
     (sa, sb) => ShoppingCart(sa.items ++ sb.items, sa.total + sb.total)

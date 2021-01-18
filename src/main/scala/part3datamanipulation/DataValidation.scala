@@ -40,12 +40,13 @@ object DataValidation {
   }
 
   import cats.instances.list._
+  import cats.syntax.all._
   implicit val combineIntMax: Semigroup[Int] = Semigroup.instance[Int](Math.max)
   def validateNumber(n: Int): Validated[List[String], Int] =
-    Validated.cond(n % 2 == 0, n, List("Number must be even"))
-    .combine(Validated.cond(n >= 0, n, List("Number must be non-negative")))
-    .combine(Validated.cond(n <= 100, n, List("Number must be <= 100")))
-    .combine(Validated.cond(testPrime(n), n, List("Number must be a prime")))
+    Validated.cond(n % 2 == 0, n, List("Number must be even")) |+|
+      Validated.cond(n >= 0, n, List("Number must be non-negative")) |+|
+      Validated.cond(n <= 100, n, List("Number must be <= 100")) |+|
+      Validated.cond(testPrime(n), n, List("Number must be a prime"))
 
   // chain
   aValidValue.andThen(_ => anInvalidValue)
@@ -100,8 +101,8 @@ object DataValidation {
   }
 
   import cats.syntax.validated._
-  val aValidMeaningOfLife: Validated[List[String], Int] = 42.valid[List[String]]
-  val anError:Validated[String, Int] = "Something went wrong".invalid[Int]
+//  val aValidMeaningOfLife: Validated[List[String], Int] = 42.valid[List[String]]
+//  val anError:Validated[String, Int] = "Something went wrong".invalid[Int]
 
   def main(args: Array[String]): Unit = {
     val form = Map(

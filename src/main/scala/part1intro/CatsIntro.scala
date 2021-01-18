@@ -35,4 +35,9 @@ object CatsIntro {
 
   val compareTwoToyCars = ToyCar("Ferrari", 29.99) === ToyCar("Lamborghini", 29.99) // true
 
+  def main(args: Array[String]): Unit = {
+    println(4 === 6)
+    println(4 === 4)
+  }
+
 }

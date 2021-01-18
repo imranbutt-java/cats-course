@@ -57,6 +57,8 @@ object Evaluation {
     if (list.isEmpty) list
     else reverseList(list.tail) :+ list.head
 
+  // If we won't use Eval.defer, this function would throw stack overflow. Thus, Eval.defer is important
+  // tailrec function
   def reverseEval[T](list: List[T]): Eval[List[T]] =
     if (list.isEmpty) Eval.now(list)
     else Eval.defer(reverseEval(list.tail).map(_ :+ list.head))
